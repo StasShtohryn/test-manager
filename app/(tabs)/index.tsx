@@ -3,10 +3,8 @@ import React from 'react'
 
 export default function indexScreen() {
   return (
-    <View>
-      <Text>indexScreen</Text>
+    <View className='flex-1 justify-center items-center'>
+      <Text>Головна</Text>
     </View>
   )
 }
-
-const styles = StyleSheet.create({})

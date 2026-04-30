@@ -11,10 +11,53 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Separator } from '@/components/ui/separator';
 import { Text } from '@/components/ui/text';
-import * as React from 'react';
+import { auth } from '@/services/FireBaseConfig';
+import { useRouter } from 'expo-router';
+import { createUserWithEmailAndPassword, signInWithEmailAndPassword } from 'firebase/auth';
+import React, { useState } from 'react';
 import { Pressable, type TextInput, View } from 'react-native';
 
 export function SignInForm() {
+  const router = useRouter();
+  const [email, setEmail] = useState<string>('');
+  const [password, setPassword] = useState<string>('');
+  const [loading, setLoading] = useState<boolean>(false);
+  const [isLoginMode, setIsLoginMode] = useState<boolean>(true);
+
+  const handleAuth = async () => {
+      if (!email || !password) {
+          alert('заповніть усі поля!');
+          return;
+      }
+      setLoading(true);
+      try {
+          if(isLoginMode){
+              await signInWithEmailAndPassword(auth, email, password);
+              alert('Ви успішно авторизовані!') 
+          } else{
+              await createUserWithEmailAndPassword(auth, email, password);
+              alert('Ви успішно зареєстровані!')
+          }
+          router.replace('/(tabs)');
+      }
+      catch (err: any){
+          let message = 'Сталася помилка';
+          if(err.code === 'auth/email-already-in-use') {
+              message = 'Цей E-Mail вже зайнятий'
+          }
+          if(err.code === 'auth/wrong-password') {
+              message = 'Невірний пароль'
+          }
+          if(err.code === 'auth/user-not-fount') {
+              message = 'Користувач не знайдений'
+          }
+          alert(message);
+      }
+      finally {
+          setLoading(false);
+      }
+  };
+
   const passwordInputRef = React.useRef<TextInput>(null);
 
   function onEmailSubmitEditing() {
@@ -22,22 +65,22 @@ export function SignInForm() {
   }
 
   function onSubmit() {
-    // TODO: Submit form and navigate to protected screen if successful
+    handleAuth();
   }
 
   return (
     <View className="gap-6">
       <Card className="border-border/0 sm:border-border shadow-none sm:shadow-sm sm:shadow-black/5">
         <CardHeader>
-          <CardTitle className="text-center text-xl sm:text-left">Sign in to your app</CardTitle>
+          <CardTitle className="text-center text-xl sm:text-left">Увійдіть</CardTitle>
           <CardDescription className="text-center sm:text-left">
-            Welcome back! Please sign in to continue
+            Вітаємо! Увійдіть, щоб продовжити
           </CardDescription>
         </CardHeader>
         <CardContent className="gap-6">
           <View className="gap-6">
             <View className="gap-1.5">
-              <Label htmlFor="email">Email</Label>
+              <Label htmlFor="email">Пошта</Label>
               <Input
                 id="email"
                 placeholder="m@example.com"
@@ -47,11 +90,14 @@ export function SignInForm() {
                 onSubmitEditing={onEmailSubmitEditing}
                 returnKeyType="next"
                 submitBehavior="submit"
+
+                value={email}
+                onChangeText={setEmail}
               />
             </View>
             <View className="gap-1.5">
               <View className="flex-row items-center">
-                <Label htmlFor="password">Password</Label>
+                <Label htmlFor="password">Пароль</Label>
                 <Button
                   variant="link"
                   size="sm"
@@ -59,7 +105,7 @@ export function SignInForm() {
                   onPress={() => {
                     // TODO: Navigate to forgot password screen
                   }}>
-                  <Text className="font-normal leading-4">Forgot your password?</Text>
+                  <Text className="font-normal leading-4">Забули пароль?</Text>
                 </Button>
               </View>
               <Input
@@ -68,27 +114,30 @@ export function SignInForm() {
                 secureTextEntry
                 returnKeyType="send"
                 onSubmitEditing={onSubmit}
+
+                value={password}
+                onChangeText={setPassword}
               />
             </View>
             <Button className="w-full" onPress={onSubmit}>
-              <Text>Continue</Text>
+              <Text>Увійти</Text>
             </Button>
           </View>
           <Text className="text-center text-sm">
-            Don&apos;t have an account?{' '}
+            Немає акаунту?{' '}
             <Pressable
               onPress={() => {
                 // TODO: Navigate to sign up screen
               }}>
-              <Text className="text-sm underline underline-offset-4">Sign up</Text>
+              <Text className="text-sm underline underline-offset-4">Зареєструватися</Text>
             </Pressable>
           </Text>
-          <View className="flex-row items-center">
+          {/* <View className="flex-row items-center">
             <Separator className="flex-1" />
             <Text className="text-muted-foreground px-4 text-sm">or</Text>
             <Separator className="flex-1" />
-          </View>
-          <SocialConnections />
+          </View> */}
+          {/* <SocialConnections /> */}
         </CardContent>
       </Card>
     </View>
