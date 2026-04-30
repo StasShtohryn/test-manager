@@ -1,10 +1,10 @@
 import { StyleSheet, Text, View } from 'react-native'
 import React from 'react'
 
-export default function indexScreen() {
+export default function profileScreen() {
   return (
     <View>
-      <Text>indexScreen</Text>
+      <Text>profileScreen</Text>
     </View>
   )
 }
