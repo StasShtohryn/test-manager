@@ -1,5 +1,5 @@
 import { Tabs } from 'expo-router';
-import { House, UserRound } from 'lucide-react-native';
+import { House, List, Plus, PlusCircle, UserRound } from 'lucide-react-native';
 
 export default function TabsLayout() {
   return (
@@ -7,7 +7,7 @@ export default function TabsLayout() {
       <Tabs.Screen
         name='index'
         options={{
-          title: 'Головна',
+          title: 'Home',
           tabBarIcon: ({ color }) => (
             <House
               size={24}
@@ -17,11 +17,23 @@ export default function TabsLayout() {
         }}
       />
       <Tabs.Screen
-        name='profile'
+        name='generating'
         options={{
-          title: 'Профіль',
+          title: 'Add',
           tabBarIcon: ({ color }) => (
-            <UserRound
+            <PlusCircle
+              size={24}
+              color={color}
+            />
+          )
+        }}
+      />
+      <Tabs.Screen
+        name='categories'
+        options={{
+          title: 'List',
+          tabBarIcon: ({ color }) => (
+            <List
               size={24}
               color={color}
             />
