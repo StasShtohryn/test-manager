@@ -1,4 +1,4 @@
-import { useRouter } from 'expo-router';
+import { Stack, useRouter } from 'expo-router';
 import React, { useState } from 'react';
 
 import {
@@ -13,40 +13,44 @@ import {
     createUserWithEmailAndPassword,
     signInWithEmailAndPassword
 } from 'firebase/auth';
-import { SignInForm } from '@/components/sign-in-form';
+import { SignForm } from '@/components/sign-form';
 
 export default function AuthScreen() {
 
     return (
-        <View style={styles.container}>
-            {/* <Text style={styles.title}>
-                {isLoginMode ? 'Вхід' : 'Реєстрація'}
-            </Text>
-            <View style={styles.inputContainer}>
-                <TextInput style={styles.input} placeholder='Ваш E-Mail' value={email}
-                    onChangeText={setEmail} autoCapitalize='none'/>
-                <TextInput style={styles.input} placeholder='Ваш пароль...' value={password}
-                    onChangeText={setPassword} secureTextEntry />
-            </View>
-            <TouchableOpacity style={styles.baseButton} onPress={handleAuth} disabled={loading}>
-                {loading ? (
-                    <ActivityIndicator color="#fff"/>
-                ): (
-                    <Text style={styles.btnText}>
-                        {isLoginMode ? 'Увійти' : 'Створити акаунт'}
-                    </Text>
-                )}
-            </TouchableOpacity>
-            <TouchableOpacity style={styles.switchBtn} 
-                onPress={() => setIsLoginMode(!isLoginMode)}>
-                <Text style={styles.switchText}>
-                    {isLoginMode
-                        ? 'Немає акаунту? Зареєструватися'
-                        : 'Вже є акаунт? Увійти'}
+        <>
+        <Stack.Screen options={{ headerShown: false }}/>
+            <View className='flex-1 justify-center items-center'>
+                {/* <Text style={styles.title}>
+                    {isLoginMode ? 'Вхід' : 'Реєстрація'}
                 </Text>
-            </TouchableOpacity> */}
-            <SignInForm />
-        </View>
+                <View style={styles.inputContainer}>
+                    <TextInput style={styles.input} placeholder='Ваш E-Mail' value={email}
+                        onChangeText={setEmail} autoCapitalize='none'/>
+                    <TextInput style={styles.input} placeholder='Ваш пароль...' value={password}
+                        onChangeText={setPassword} secureTextEntry />
+                </View>
+                <TouchableOpacity style={styles.baseButton} onPress={handleAuth} disabled={loading}>
+                    {loading ? (
+                        <ActivityIndicator color="#fff"/>
+                    ): (
+                        <Text style={styles.btnText}>
+                            {isLoginMode ? 'Увійти' : 'Створити акаунт'}
+                        </Text>
+                    )}
+                </TouchableOpacity>
+                <TouchableOpacity style={styles.switchBtn} 
+                    onPress={() => setIsLoginMode(!isLoginMode)}>
+                    <Text style={styles.switchText}>
+                        {isLoginMode
+                            ? 'Немає акаунту? Зареєструватися'
+                            : 'Вже є акаунт? Увійти'}
+                    </Text>
+                </TouchableOpacity> */}
+                <SignForm />
+            </View>
+        </>
+        
     )
 }
 
