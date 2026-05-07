@@ -19,7 +19,7 @@ export default function AuthScreen() {
 
     return (
         <>
-        <Stack.Screen options={{ headerShown: false }}/>
+            <Stack.Screen options={{ headerShown: false }} />
             <View className='flex-1 justify-center items-center'>
                 {/* <Text style={styles.title}>
                     {isLoginMode ? 'Вхід' : 'Реєстрація'}
@@ -50,15 +50,15 @@ export default function AuthScreen() {
                 <SignForm />
             </View>
         </>
-        
+
     )
 }
 
 const styles = StyleSheet.create({
-    container: { flex: 1, justifyContent: 'center', alignItems: 'center', padding: 20,  gap: 20 },
+    container: { flex: 1, justifyContent: 'center', alignItems: 'center', padding: 20, gap: 20 },
     title: { fontSize: 24, fontWeight: '600', fontFamily: 'monospace', marginBottom: 20, marginTop: 10, color: 'black' },
-    inputContainer: { gap: 10},
-    input: { 
+    inputContainer: { gap: 10 },
+    input: {
         width: 300, height: 40, borderWidth: 1, borderColor: 'black', padding: 10, fontSize: 14, fontFamily: 'monospace'
     },
     baseButton: {
@@ -66,5 +66,5 @@ const styles = StyleSheet.create({
     },
     btnText: { color: 'black', fontWeight: 600, fontSize: 16, backgroundColor: 'white', },
     switchBtn: { alignItems: 'center' },
-    switchText: { color: 'black', fontFamily: 'monospace', fontWeight: '400', fontSize: 13}
+    switchText: { color: 'black', fontFamily: 'monospace', fontWeight: '400', fontSize: 13 }
 })

@@ -10,6 +10,7 @@
     "clean": "rm -rf .expo node_modules"
   },
   "dependencies": {
+    "@lottiefiles/dotlottie-react": "^0.13.5",
     "@react-native-async-storage/async-storage": "^2.2.0",
     "@react-navigation/native": "^7.0.0",
     "@rn-primitives/label": "^1.4.0",
@@ -28,6 +29,8 @@
     "expo-status-bar": "~3.0.9",
     "expo-system-ui": "~6.0.9",
     "firebase": "^12.12.1",
+    "lottie": "^0.0.1",
+    "lottie-react-native": "~7.3.1",
     "lucide-react-native": "^0.545.0",
     "nativewind": "^4.2.3",
     "react": "19.1.0",
