@@ -22,27 +22,25 @@ import { Text } from '@/components/ui/text';
 
 export default function TestingScreen() {
     const router = useRouter();
-    // const { id } = useLocalSearchParams<{ id: string }>();
+    const { id } = useLocalSearchParams<{ id?: string }>();
     const [quiz, setQuiz] = useState<Quiz | null>(null);
     const [loading, setLoading] = useState(true);
-
-    let id = "cmmdjge5e00mkutgrn2025lta"
     useEffect(() => {
-        if (id) {
-            fetchQuizById(id).then((data) => {
+        if (!id) {
+            setLoading(false);
+            return;
+        }
+
+        fetchQuizById(id).then((data) => {
                 setQuiz(data);
                 setLoading(false);
-            });
-
-            setTimeout(() => {
-                setLoading(false);
-            }, 1000);
-        }
+            }).catch(() => setLoading(false));
     }, [id]);
 
-    // const handleStart = () => {
-    //     console.log("Starting quiz:", id);
-    // };
+    const handleStart = () => {
+        if (!id) return;
+        router.push({ pathname: '/testing/testing', params: { id } });
+    };
 
 
     if (loading) {
