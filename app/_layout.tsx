@@ -1,25 +1,41 @@
 import '@/global.css';
-
-import { NAV_THEME } from '@/lib/theme';
-import { ThemeProvider } from '@react-navigation/native';
-import { PortalHost } from '@rn-primitives/portal';
-import { Stack } from 'expo-router';
-import { StatusBar } from 'expo-status-bar';
+import { auth } from '@/services/FireBaseConfig';
+import { Stack, useRootNavigationState, useRouter } from 'expo-router';
+import { onAuthStateChanged } from 'firebase/auth';
 import { useColorScheme } from 'nativewind';
-
-export {
-  // Catch any errors thrown by the Layout component.
-  ErrorBoundary,
-} from 'expo-router';
+import { useEffect, useState } from 'react';
 
 export default function RootLayout() {
-  const { colorScheme } = useColorScheme();
+  const { setColorScheme } = useColorScheme();
+  setColorScheme('light');
+  const router = useRouter();
+  const navigationState = useRootNavigationState();
+  const [isReady, setIsReady] = useState<boolean>(false);
+  const [user, setUser] = useState<any>(null);
+
+  useEffect(() => {
+    const unsubscribe = onAuthStateChanged(auth, (authUser) => {
+      setUser(authUser);
+      setIsReady(true);
+    });
+    return unsubscribe;
+  }, []);
+
+  useEffect(() => {
+    if (!isReady || !navigationState.key) {
+      return;
+    }
+    if (!user) {
+      router.replace('/auth');
+    } else {
+      router.replace('/(tabs)');
+    }
+  }, [user, isReady, navigationState?.key]);
 
   return (
-    <ThemeProvider value={NAV_THEME[colorScheme ?? 'light']}>
-      <StatusBar style={colorScheme === 'dark' ? 'light' : 'dark'} />
-      <Stack />
-      <PortalHost />
-    </ThemeProvider>
+    <Stack>
+      <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
+      <Stack.Screen name="auth" options={{ headerShown: false }} />
+    </Stack>
   );
 }
