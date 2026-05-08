@@ -1,10 +1,11 @@
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Text } from '@/components/ui/text';
+import { TestCard } from '@/components/TestCard';
 import { fetchCategories, fetchQuizzes } from '@/services/api.service';
 import { Category, QuizPreview } from '@/types/api.types';
 import axios from 'axios';
-import { Stack, useLocalSearchParams } from 'expo-router';
+import { Stack, useLocalSearchParams, useRouter } from 'expo-router';
 import React, { useEffect, useMemo, useState } from 'react';
 import { ActivityIndicator, FlatList, Pressable, View } from 'react-native';
 
@@ -12,6 +13,7 @@ const MIN_QUESTIONS_DEFAULT = '';
 const MAX_QUESTIONS_DEFAULT = '';
 
 export default function TestsScreen() {
+  const router = useRouter();
   const { category } = useLocalSearchParams<{ category?: string }>();
   const [tests, setTests] = useState<QuizPreview[]>([]);
   const [categories, setCategories] = useState<Category[]>([]);
@@ -183,11 +185,15 @@ export default function TestsScreen() {
             </View>
           }
           renderItem={({ item }) => (
-            <View className="rounded-xl border border-border bg-card p-4">
-              <Text className="text-base font-semibold">{item.title}</Text>
-              <Text className="mt-1 text-sm text-muted-foreground">{item.category}</Text>
-              <Text className="mt-1 text-sm text-muted-foreground">{item.questionCount} questions</Text>
-            </View>
+            <TestCard
+              test={item}
+              onPress={(testId) =>
+                router.push({
+                  pathname: '/(tabs)/test-preview/[id]',
+                  params: { id: testId },
+                })
+              }
+            />
           )}
         />
       )}
