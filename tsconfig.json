@@ -3,6 +3,7 @@
   "compilerOptions": {
     "strict": true,
     "baseUrl": ".",
+
     "jsx": "react-native",
     "paths": {
       "@/*": [
@@ -18,3 +19,4 @@
     "nativewind-env.d.ts"
   ]
 }
+
