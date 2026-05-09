@@ -40,9 +40,9 @@ export default function TestingScreen() {
         }
     }, [id]);
 
-    // const handleStart = () => {
-    //     console.log("Starting quiz:", id);
-    // };
+    const handleStart = () => {
+        router.push({pathname: '/testing/testing', params: { id: id}})
+    };
 
 
     if (loading) {
@@ -59,7 +59,7 @@ export default function TestingScreen() {
     if (!quiz && !loading) {
         return (
             <View className="flex-1 justify-center items-center p-4">
-                <Text>ТTest wasn't found :( </Text>
+                <Text>Тest wasn't found :( </Text>
                 <TouchableOpacity onPress={() => router.back()}>
                     <Text className="text-blue-600 mt-4">Back</Text>
                 </TouchableOpacity>
@@ -71,7 +71,7 @@ export default function TestingScreen() {
 
     return (
         <>
-            < View className="flex-row items-center justify-between px-4 py-3 border-b border-slate-100" >
+            <View className="flex-row items-center justify-between px-4 py-3 border-b border-slate-100" >
                 <TouchableOpacity onPress={() => router.back()} className="p-2">
                     <Ionicons name="arrow-back" size={24} color="black" />
                 </TouchableOpacity>
@@ -80,29 +80,24 @@ export default function TestingScreen() {
             </View >
 
             <ScrollView className="flex-1 px-6">
-                <View className="mt-6 mb-8">
-                    <View className="self-start px-3 py-1 rounded-full mb-3">
-                        <Button variant={'secondary'} className="shadow-100">
-                            <Text>{quiz?.category || 'Category'}</Text>
-                        </Button>
-
+                <View className="mt-6 mb-2">
+                    <View className="mb-3 py-1 px-3 border border-black/30 rounded-lg">
+                        <Text className='text-center text-md font-semibold'>{quiz?.category || 'Category'}</Text>
                     </View>
                     <Text className="text-3xl font-extrabold text-slate-900 leading-tight">
                         {quiz?.title || 'Name of test'}
                     </Text>
                 </View>
 
-                <View className="flex-row justify-between bg-slate-50 p-5 rounded-3xl mb-8 border border-slate-100">
+                <View className="flex-row justify-between bg-slate-50 px-14 py-4 rounded-2xl border border-black/20 mb-8 border border-slate-100">
                     <View className="items-center">
                         <Text className="text-slate-400 text-xs mb-1 uppercase font-bold">Questions</Text>
                         <Text className="text-lg font-bold text-slate-900">{quiz?.questionCount || 0}</Text>
                     </View>
-                    <View className="w-[1px] h-full bg-slate-200" />
                     <View className="items-center">
                         <Text className="text-slate-400 text-xs mb-1 uppercase font-bold">Level</Text>
-                        <Text className="text-lg font-bold text-slate-900">{quiz?.difficulty || 'EASY'}</Text>
+                        <Text className='text-lg font-bold text-slate-900'>{quiz?.difficulty || 'EASY'}</Text>
                     </View>
-                    <View className="w-[1px] h-full bg-slate-200" />
                 </View>
 
                 {/* Опис */}
@@ -151,8 +146,8 @@ export default function TestingScreen() {
 
                                     {/* Додаткова інфа: складність або тип */}
                                     <View className="flex-row mt-2 gap-2">
-                                        <View className="bg-slate-200 px-2 py-0.5 rounded-md">
-                                            <Text className="text-[10px] text-slate-600 font-bold uppercase">
+                                        <View className={`px-2 py-0.5 rounded-md ${question.difficulty === 'EASY' ? 'bg-green-400' : question.difficulty === 'MEDIUM' ? 'bg-yellow-700' : 'bg-red-500'}`}>
+                                            <Text className={`text-[10px] font-bold uppercase ${question.difficulty ==='MEDIUM' ? 'text-white' : 'text-slate-600'}`}>
                                                 {question.difficulty}
                                             </Text>
                                         </View>
@@ -163,13 +158,11 @@ export default function TestingScreen() {
                     ))}
 
                 </View>
-
-                <View className="h-20" />
             </ScrollView >
 
 
-            <Button variant={'default'} onPress={handleStart}>
-                <Text>START</Text>
+            <Button variant={'default'} onPress={handleStart} className='mb-2 mx-2'>
+                <Text className='uppercase'>Start</Text>
             </Button>
         </>
     );
