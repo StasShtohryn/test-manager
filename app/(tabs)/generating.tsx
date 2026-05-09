@@ -12,6 +12,7 @@ import { X } from 'lucide-react-native';
 import { Category, QuestionsQueryParams, StandaloneQuestion } from '@/types/api.types';
 import { fetchCategories, fetchQuestions } from '@/services/api.service';
 import { QuestionsPreview } from '@/components/generateTestPreview';
+import { router } from 'expo-router';
 
 export default function generating() {
     // ->
@@ -131,6 +132,25 @@ export default function generating() {
     };
 
 
+    const startGeneratedQuiz = () => {
+        if (generatedQuestions.length === 0) return;
+        const temporaryQuiz = {
+            id: `gen_${Date.now()}`,
+            title: "Згенерований тест",
+            category: selectedCategories.map(c => c.name).join(', '),
+            difficulty: difficulty,
+            questions: generatedQuestions,
+            questionCount: generatedQuestions.length,
+            createdAt: new Date().toISOString(),
+        };
+
+
+        router.push({
+            pathname: '/testing/testing',
+            params: { data: JSON.stringify(temporaryQuiz) }
+        });
+    };
+
     return (
         <ScrollView className="flex-1 p-6 bg-background">
             <Text className="text-2xl font-bold mb-6">Generate test</Text>
@@ -168,9 +188,9 @@ export default function generating() {
             </View>
 
             {/* Контейнер для бейджів */}
-            <View className="flex-row flex-wrap">
+            <View className="flex-row flex-wrap gap-2">
                 {selectedCategories.map((cat) => (
-                    <Badge key={cat.id} variant="secondary" className="flex-row items-center gap-1">
+                    <Badge key={cat.id} className="flex-row items-center gap-4 px-4 rounded-xl">
                         <Text className="text-xs">{cat.name}</Text>
                         <Button
                             variant="ghost"
@@ -235,7 +255,6 @@ export default function generating() {
             <Button
                 onPress={generateQuiz}
                 disabled={loading}
-                className="mt-4"
             >
                 <Text>{loading ? 'Generating...' : 'Generate new text'}</Text>
             </Button>
@@ -244,6 +263,13 @@ export default function generating() {
                 <>
                     <QuestionsPreview questions={generatedQuestions} />
 
+                    <Button
+                        variant={'default'}
+                        className="mt-6 h-14 rounded-2xl shadow-lg"
+                        onPress={startGeneratedQuiz}
+                    >
+                        <Text className="text-white font-bold text-lg">Почати тестування</Text>
+                    </Button>
                 </>
             )}
         </ScrollView >

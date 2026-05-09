@@ -17,7 +17,7 @@ export const QuestionsPreview = ({ questions }: QuestionsPreviewProps) => {
             {questions.map((question, index) => (
                 <View
                     key={question.id || index.toString()}
-                    className="mb-4 p-4 bg-slate-50 rounded-2xl border border-slate-100 shadow-sm"
+                    className="mb-4 p-4 bg-slate-50 rounded-2xl border border-slate-300"
                 >
                     <View className="flex-row items-start gap-3">
                         {/* Номер питання */}

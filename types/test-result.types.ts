@@ -1,4 +1,4 @@
-import type { Question, Answer, Difficulty } from './api.types';
+import type { Question, Answer, Difficulty, Quiz } from './api.types';
 
 /**
  * Result of a single answered question
@@ -30,7 +30,7 @@ export interface TestResult {
   /** Unique identifier of the result */
   id: string;
   /** Quiz info */
-  quiz: QuizSummary;
+  quiz: Quiz;
   /** Per-question results */
   questionResults: QuestionResult[];
 
