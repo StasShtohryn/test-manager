@@ -20,6 +20,7 @@ import {
 //  Score Ring (animated SVG-like circle)
 // ════════════════════════════════════════════
 
+
 function ScoreRing({ score, passed }: { score: number; passed: boolean }) {
   const accentClass = passed ? 'text-emerald-500' : 'text-rose-500';
   const ringColor = passed ? 'border-emerald-500' : 'border-rose-500';
