@@ -6,6 +6,7 @@ import { Answer, Quiz } from '@/types/api.types';
 import { fetchQuizById } from '@/services/api.service';
 import QuestionCard from '@/components/QuestionCard';
 import { createTestResult } from '@/services/test-result-service';
+import { saveTestResult } from '@/services/firebase-results.service';
 
 export default function testing() {
     const router = useRouter();
@@ -33,29 +34,33 @@ export default function testing() {
         }
     }, [id]);
 
-    const handleAnswer = (answer: Answer) => {
-    const questionId = quiz!.questions[currentQuestion].id;
+    const handleAnswer = async (answer: Answer) => {
+        const questionId = quiz!.questions[currentQuestion].id;
 
-    setUserAnswers((prev) => {
-        const newMap = new Map(prev);
-        newMap.set(questionId, answer.id);
-        return newMap;
-    });
+        // Створюємо новий Map одразу
+        const newAnswers = new Map(userAnswers);
+        newAnswers.set(questionId, answer.id);
 
-    if (currentQuestion < quiz!.questions.length - 1) {
-        setCurrentQuestion((prev) => prev + 1);
-    } else {
-        const result = createTestResult(
-        quiz!,
-        userAnswers,
-        new Date()
-        );
+        // Оновлюємо state (для UI)
+        setUserAnswers(newAnswers);
 
-        router.push({
-        pathname: '/testing/results',
-        params: { result: JSON.stringify(result) }
-        });
-    }
+        if (currentQuestion < quiz!.questions.length - 1) {
+            setCurrentQuestion((prev) => prev + 1);
+        } else {
+            // Використовуємо newAnswers, а НЕ userAnswers
+            const result = createTestResult(quiz!, newAnswers, new Date());
+
+            try {
+                await saveTestResult(result);
+            } catch (error) {
+                console.error('Failed to save result:', error);
+            }
+
+            router.push({
+            pathname: '/testing/results',
+            params: { result: JSON.stringify(result) }
+            });
+        }
     };
 
     const nextQuestion = () => {
