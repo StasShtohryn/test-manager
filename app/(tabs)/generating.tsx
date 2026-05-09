@@ -12,6 +12,7 @@ import { X } from 'lucide-react-native';
 import { Category, QuestionsQueryParams, StandaloneQuestion } from '@/types/api.types';
 import { fetchCategories, fetchQuestions } from '@/services/api.service';
 import { QuestionsPreview } from '@/components/generateTestPreview';
+import { router } from 'expo-router';
 
 export default function generating() {
     // ->
@@ -131,6 +132,25 @@ export default function generating() {
     };
 
 
+    const startGeneratedQuiz = () => {
+        if (generatedQuestions.length === 0) return;
+        const temporaryQuiz = {
+            id: `gen_${Date.now()}`,
+            title: "Згенерований тест",
+            category: selectedCategories.map(c => c.name).join(', '),
+            difficulty: difficulty,
+            questions: generatedQuestions,
+            questionCount: generatedQuestions.length,
+            createdAt: new Date().toISOString(),
+        };
+
+
+        router.push({
+            pathname: '/testing/testing',
+            params: { data: JSON.stringify(temporaryQuiz) }
+        });
+    };
+
     return (
         <ScrollView className="flex-1 p-6 bg-background">
             <Text className="text-2xl font-bold mb-6">Generate test</Text>
@@ -243,7 +263,12 @@ export default function generating() {
             {generatedQuestions.length > 0 && (
                 <>
                     <QuestionsPreview questions={generatedQuestions} />
-
+                    <Button
+                        className="mt-6 bg-green-600 h-14 rounded-2xl shadow-lg"
+                        onPress={startGeneratedQuiz}
+                    >
+                        <Text className="text-white font-bold text-lg">Почати тестування</Text>
+                    </Button>
                 </>
             )}
         </ScrollView >
