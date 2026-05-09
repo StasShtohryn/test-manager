@@ -85,9 +85,9 @@ export default function TestsScreen() {
     );
     const allowedCategoryNames = selectedCategoryGroup
       ? new Set([
-          selectedCategoryGroup.name.toLowerCase(),
-          ...selectedCategoryGroup.categories.map((subcategory) => subcategory.name.toLowerCase()),
-        ])
+        selectedCategoryGroup.name.toLowerCase(),
+        ...selectedCategoryGroup.categories.map((subcategory) => subcategory.name.toLowerCase()),
+      ])
       : null;
 
     return tests.filter((test) => {
@@ -107,6 +107,7 @@ export default function TestsScreen() {
   return (
     <View className="flex-1 bg-background p-4">
       <Stack.Screen options={{ headerShown: false }} />
+
 
       <View className="mb-4 gap-3">
         <View className="flex-row items-center gap-2">
@@ -150,9 +151,8 @@ export default function TestsScreen() {
             return (
               <Pressable
                 onPress={() => setSelectedCategory(item)}
-                className={`rounded-full border px-3 py-2 ${
-                  isActive ? 'border-primary bg-primary/10' : 'border-border bg-card'
-                }`}>
+                className={`rounded-full border px-3 py-2 ${isActive ? 'border-primary bg-primary/10' : 'border-border bg-card'
+                  }`}>
                 <Text className={isActive ? 'text-primary font-medium' : 'text-foreground'}>
                   {item === 'all' ? 'All categories' : item}
                 </Text>
