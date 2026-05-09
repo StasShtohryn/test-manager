@@ -1,4 +1,4 @@
-import { StyleSheet, View } from 'react-native'
+import { ScrollView, StyleSheet, View } from 'react-native'
 import { Text } from '@/components/ui/text';
 import { Button } from '@/components/ui/button';
 import {
@@ -12,13 +12,31 @@ import {
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { auth } from '@/services/FireBaseConfig'
+import { getCompletedTests } from '@/services/firebase-results.service'
+import { getFavorites } from '@/services/firebase-favorites.service'
 import { signOut } from 'firebase/auth'
 import { router } from 'expo-router';
+import { TestResult } from '@/types/test-result.types';
 
 export default function indexScreen() {
     const [value, setValue] = useState('passed');
+    const [completedTests, setCompletedTests] = useState<TestResult[]>([]);
+
+    useEffect(() => {
+        const loadCompletedTests = async () => {
+            try {
+                const tests = await getCompletedTests()
+                setCompletedTests(tests)
+            } catch (error) {
+                console.log('Error loading tests:', error)
+            }
+        }
+
+        loadCompletedTests()
+    }, [])
+
     return (
         <View className='flex-1 justify-center items-center'>
             <Text className='font-bold text-lg'>Hi, {auth.currentUser?.email}!</Text>
@@ -35,7 +53,26 @@ export default function indexScreen() {
                 <Tabs value={value} onValueChange={setValue}>
                     <TabsContent value="passed">
                         <View>
-                            <Text>asdasd</Text>
+                            <ScrollView>
+                                {completedTests.map((test) => (
+                                    <View
+                                        key={test.id}
+                                        className="p-4 border border-black/10 rounded-xl mb-2 bg-white"
+                                    >
+                                        <Text className="font-bold text-lg">
+                                            {test.quiz.title}
+                                        </Text>
+                                
+                                        <Text>
+                                            Score: {test.score}
+                                        </Text>
+                                
+                                        <Text>
+                                            Date: {test.completedAt.toLocaleString()}
+                                        </Text>
+                                    </View>
+                                ))}
+                            </ScrollView>
                         </View>
                     </TabsContent>
 

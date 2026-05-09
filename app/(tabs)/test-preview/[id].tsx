@@ -102,7 +102,7 @@ export default function TestingScreen() {
     return (
         <>
             <View className="flex-row items-center justify-between px-4 py-3 border-b border-slate-100" >
-                <TouchableOpacity onPress={() => router.back()} className="p-2">
+                <TouchableOpacity onPress={() => router.push('/(tabs)/categories')} className="p-2">
                     <Ionicons name="arrow-back" size={24} color="black" />
                 </TouchableOpacity>
                 <Text className="text-lg font-bold text-slate-900">Preview of test </Text>

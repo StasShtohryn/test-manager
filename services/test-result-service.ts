@@ -53,16 +53,9 @@ export function createTestResult(
     (completedAt.getTime() - startedAt.getTime()) / 1000
   );
 
-  const quizSummary: QuizSummary = {
-    id: quiz.id,
-    title: quiz.title,
-    category: quiz.category,
-    difficulty: quiz.difficulty,
-  };
-
   return {
     id: generateResultId(),
-    quiz: quizSummary,
+    quiz: quiz,
     questionResults,
     totalQuestions: questionResults.length,
     correctAnswers,

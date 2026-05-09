@@ -7,7 +7,7 @@ import {
   StatusBar,
   useWindowDimensions,
 } from 'react-native';
-import { router, useLocalSearchParams } from 'expo-router';
+import { router, Stack, useLocalSearchParams } from 'expo-router';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import type { TestResult, QuestionResult } from '@/types/test-result.types';
 import {
@@ -255,7 +255,7 @@ function QuestionCard({
       {result.timeSpent > 0 && (
         <View className="mt-3 flex-row items-center justify-end">
           <Text className="text-[11px] text-muted-foreground">
-            ⏱ {formatDuration(result.timeSpent)}
+            ⏱ {formatDuration(Number((result.timeSpent / 1000).toFixed(2)))}
           </Text>
         </View>
       )}
@@ -426,7 +426,17 @@ export default function TestResultScreen() {
   };
 
   const handleRetry = () => {
-    router.replace(`/test-preview/${result.quiz.id}`);  // ← з результату беремо id
+    if(!result.quiz.id.startsWith('gen_')) {
+      router.replace(`/test-preview/${result.quiz.id}`);  // ← з результату беремо id
+    }
+    
+    router.push({
+        pathname: '/testing/testing',
+        params: { data: JSON.stringify(result.quiz) }
+    });
+
+    console.log(result.quiz);
+
   };
 
   const handleHome = () => {
@@ -434,141 +444,146 @@ export default function TestResultScreen() {
   };
 
   return (
-    <SafeAreaView edges={['top']} className="flex-1 bg-background">
-      <StatusBar barStyle="dark-content" />
-      <ScrollView
-        showsVerticalScrollIndicator={false}
-        contentContainerClassName="pb-12"
-      >
-        {/* ─── Hero Section ─── */}
-        <View className="px-6 pt-6">
-          {/* Quiz meta */}
-          <View className="mb-1 flex-row items-center gap-2">
-            <Text className="text-[11px] font-semibold uppercase tracking-[0.2em] text-muted-foreground">
-              {result.quiz.category}
-            </Text>
-            <View className="h-1 w-1 rounded-full bg-muted-foreground/50" />
-            <Text className="text-[11px] font-semibold uppercase tracking-[0.2em] text-muted-foreground">
-              {getDifficultyLabel(result.quiz.difficulty)}
-            </Text>
-          </View>
-
-          <Text className="text-2xl font-bold leading-tight tracking-tight text-foreground">
-            {result.quiz.title}
-          </Text>
-        </View>
-
-        {/* ─── Score Ring ─── */}
-        <View className="px-6 pb-2 pt-10">
-          <ScoreRing score={result.score} passed={result.passed} />
-
-          <View className="mt-6 items-center">
-            <Text className="text-2xl font-bold tracking-tight text-foreground">
-              {message.title}
-            </Text>
-            <Text className="mt-1 max-w-xs text-center text-sm leading-relaxed text-muted-foreground">
-              {message.subtitle}
-            </Text>
-          </View>
-
-          {/* Pass/Fail badge */}
-          <View className="mt-5 items-center">
-            <View
-              className={`flex-row items-center gap-1.5 rounded-full px-3 py-1 ${
-                result.passed ? 'bg-emerald-100' : 'bg-rose-100'
-              }`}
-            >
-              <View
-                className={`h-1.5 w-1.5 rounded-full ${
-                  result.passed ? 'bg-emerald-500' : 'bg-rose-500'
-                }`}
-              />
-              <Text
-                className={`text-xs font-semibold ${
-                  result.passed ? 'text-emerald-700' : 'text-rose-700'
-                }`}
-              >
-                {result.passed
-                  ? `Passed · pass mark ${result.passingScore}%`
-                  : `Failed · need ${result.passingScore}%`}
+    <>
+      <Stack.Screen options={{ headerTitle: `Results of ${result.quiz.title}`}}/>
+      <SafeAreaView edges={['top']} className="flex-1 bg-background">
+        <StatusBar barStyle="dark-content" />
+        <ScrollView
+          showsVerticalScrollIndicator={false}
+          contentContainerClassName="pb-12"
+        >
+          {/* ─── Hero Section ─── */}
+          <View className="px-6 pt-6">
+            {/* Quiz meta */}
+            <View className="mb-1 flex-row items-center gap-2">
+              <Text className="text-[11px] font-semibold uppercase tracking-[0.2em] text-muted-foreground">
+                {result.quiz.category}
+              </Text>
+              <View className="h-1 w-1 rounded-full bg-muted-foreground/50" />
+              <Text className="text-[11px] font-semibold uppercase tracking-[0.2em] text-muted-foreground">
+                {getDifficultyLabel(result.quiz.difficulty)}
               </Text>
             </View>
-          </View>
-        </View>
 
-        {/* ─── Stats ─── */}
-        <View className="px-6 pt-8">
-          <StatsRow result={result} />
-        </View>
-
-        {/* ─── Breakdown ─── */}
-        <View className="px-6 pt-6">
-          <View className="rounded-2xl border border-border bg-card p-5">
-            <ProgressBreakdown result={result} />
-          </View>
-        </View>
-
-        {/* ─── Divider ─── */}
-        <View className="my-8 px-6">
-          <View className="h-px bg-border" />
-        </View>
-
-        {/* ─── Questions Section ─── */}
-        <View className="gap-4 px-6">
-          <View>
-            <Text className="text-[11px] font-semibold uppercase tracking-[0.2em] text-muted-foreground">
-              Answer review
-            </Text>
-            <Text className="mt-1 text-xl font-bold tracking-tight text-foreground">
-              What went wrong?
+            <Text className="text-2xl font-bold leading-tight tracking-tight text-foreground">
+              {result.quiz.title}
             </Text>
           </View>
 
-          <FilterPills mode={filter} onChange={setFilter} counts={counts} />
+          {/* ─── Score Ring ─── */}
+          <View className="px-6 pb-2 pt-10">
+            <ScoreRing score={result.score} passed={result.passed} />
 
-          <View className="mt-2 gap-3">
-            {filteredResults.map((qr) => (
-              <QuestionCard
-                key={qr.question.id}
-                result={qr}
-                index={result.questionResults.indexOf(qr)}
-              />
-            ))}
+            <View className="mt-6 items-center">
+              <Text className="text-2xl font-bold tracking-tight text-foreground">
+                {message.title}
+              </Text>
+              <Text className="mt-1 max-w-xs text-center text-sm leading-relaxed text-muted-foreground">
+                {message.subtitle}
+              </Text>
+            </View>
 
-            {filteredResults.length === 0 && (
-              <View className="items-center rounded-2xl border border-dashed border-border bg-card/50 px-6 py-10">
-                <Text className="text-base font-medium text-muted-foreground">
-                  Nothing here
-                </Text>
-                <Text className="mt-1 text-sm text-muted-foreground/70">
-                  No questions in this category
+            {/* Pass/Fail badge */}
+            <View className="mt-5 items-center">
+              <View
+                className={`flex-row items-center gap-1.5 rounded-full px-3 py-1 ${
+                  result.passed ? 'bg-emerald-100' : 'bg-rose-100'
+                }`}
+              >
+                <View
+                  className={`h-1.5 w-1.5 rounded-full ${
+                    result.passed ? 'bg-emerald-500' : 'bg-rose-500'
+                  }`}
+                />
+                <Text
+                  className={`text-xs font-semibold ${
+                    result.passed ? 'text-emerald-700' : 'text-rose-700'
+                  }`}
+                >
+                  {result.passed
+                    ? `Passed · pass mark ${result.passingScore}%`
+                    : `Failed · need ${result.passingScore}%`}
                 </Text>
               </View>
-            )}
+            </View>
           </View>
-        </View>
 
-        {/* ─── Actions ─── */}
-        <View className="gap-3 px-6 pt-10">
-          <Pressable
-            onPress={handleRetry}
-            className="items-center rounded-2xl bg-foreground py-4 active:opacity-80"
-          >
-            <Text className="text-base font-semibold text-background">
-              Try again
-            </Text>
-          </Pressable>
+          {/* ─── Stats ─── */}
+          <View className="px-6 pt-8">
+            <StatsRow result={result} />
+          </View>
 
-          <Pressable
-            onPress={handleHome}
-            className="items-center rounded-2xl border border-border bg-card py-4 active:opacity-70"
-          >
-            <Text className="text-base font-semibold text-foreground">
-              Back to home
-            </Text>
-          </Pressable>
-        </View>
-      </ScrollView>
-    </SafeAreaView>
+          {/* ─── Breakdown ─── */}
+          <View className="px-6 pt-6">
+            <View className="rounded-2xl border border-border bg-card p-5">
+              <ProgressBreakdown result={result} />
+            </View>
+          </View>
+
+          {/* ─── Divider ─── */}
+          <View className="my-8 px-6">
+            <View className="h-px bg-border" />
+          </View>
+
+          {/* ─── Questions Section ─── */}
+          <View className="gap-4 px-6">
+            <View>
+              <Text className="text-[11px] font-semibold uppercase tracking-[0.2em] text-muted-foreground">
+                Answer review
+              </Text>
+              <Text className="mt-1 text-xl font-bold tracking-tight text-foreground">
+                What went wrong?
+              </Text>
+            </View>
+
+            <FilterPills mode={filter} onChange={setFilter} counts={counts} />
+
+            <View className="mt-2 gap-3">
+              {filteredResults.map((qr) => (
+                <QuestionCard
+                  key={qr.question.id}
+                  result={qr}
+                  index={result.questionResults.indexOf(qr)}
+                />
+              ))}
+
+              {filteredResults.length === 0 && (
+                <View className="items-center rounded-2xl border border-dashed border-border bg-card/50 px-6 py-10">
+                  <Text className="text-base font-medium text-muted-foreground">
+                    Nothing here
+                  </Text>
+                  <Text className="mt-1 text-sm text-muted-foreground/70">
+                    No questions in this category
+                  </Text>
+                </View>
+              )}
+            </View>
+          </View>
+
+          {/* ─── Actions ─── */}
+
+        </ScrollView>
+          <View className="gap-3 px-6 py-5">
+            <Pressable
+              onPress={handleRetry}
+              className="items-center rounded-2xl bg-foreground py-4 active:opacity-80"
+            >
+              <Text className="text-base font-semibold text-background">
+                Try again
+              </Text>
+            </Pressable>
+
+            <Pressable
+              onPress={handleHome}
+              className="items-center rounded-2xl border border-border bg-card py-4 active:opacity-70"
+            >
+              <Text className="text-base font-semibold text-foreground">
+                Back to home
+              </Text>
+            </Pressable>
+          </View>
+      </SafeAreaView>
+    </>
+
   );
 }

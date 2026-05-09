@@ -12,6 +12,10 @@ export default function testing() {
     const router = useRouter();
     
     const { id } = useLocalSearchParams<{ id: string }>();
+    const { data: quizString } = useLocalSearchParams<{ data: string }>();
+    
+    const temporaryQuiz: Quiz | null = quizString ? JSON.parse(quizString) : null;
+
     const [quiz, setQuiz] = useState<Quiz | null>(null);
     const [loading, setLoading] = useState(true);
 
@@ -20,6 +24,11 @@ export default function testing() {
     const [userAnswers, setUserAnswers] = useState(
         new Map<string, string | null>()
     );
+    const [questionTimings, setQuestionTimings] = useState(
+        new Map<string, number>()
+    );
+
+    const [startedAt] = useState(new Date());
 
     useEffect(() => {
         if (id) {
@@ -32,7 +41,10 @@ export default function testing() {
                 setLoading(false);
             }, 1000);
         }
+        else setQuiz(temporaryQuiz)
     }, [id]);
+
+    const startTime = Date.now()
 
     const handleAnswer = async (answer: Answer) => {
         const questionId = quiz!.questions[currentQuestion].id;
@@ -41,19 +53,27 @@ export default function testing() {
         const newAnswers = new Map(userAnswers);
         newAnswers.set(questionId, answer.id);
 
+        const endTime = Date.now();
+
+        const newTimings = new Map(questionTimings);
+        newTimings.set(questionId, endTime-startTime);
+
         // Оновлюємо state (для UI)
         setUserAnswers(newAnswers);
+        setQuestionTimings(newTimings);
 
         if (currentQuestion < quiz!.questions.length - 1) {
             setCurrentQuestion((prev) => prev + 1);
         } else {
             // Використовуємо newAnswers, а НЕ userAnswers
-            const result = createTestResult(quiz!, newAnswers, new Date());
+            const result = createTestResult(quiz!, newAnswers, startedAt, newTimings);
 
-            try {
-                await saveTestResult(result);
-            } catch (error) {
-                console.error('Failed to save result:', error);
+            if(id) {
+                try {
+                    await saveTestResult(result);
+                } catch (error) {
+                    console.error('Failed to save result:', error);
+                }
             }
 
             router.push({
