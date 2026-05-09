@@ -1,4 +1,5 @@
-import { StyleSheet, Text, View } from 'react-native'
+import { StyleSheet, View } from 'react-native'
+import { Text } from '@/components/ui/text';
 import { Button } from '@/components/ui/button';
 import {
     Card,
@@ -20,31 +21,31 @@ export default function indexScreen() {
     const [value, setValue] = useState('passed');
     return (
         <View className='flex-1 justify-center items-center'>
-            <Text className='font-bold text-lg'>Привіт, {auth.currentUser?.email}!</Text>
-            <Text className='text-red-500 font-semibold text-md' onPress={() => { signOut(auth) }}>Вийти</Text>
-            <View className="flex w-full max-w-sm flex-col gap-6">
+            <Text className='font-bold text-lg'>Hi, {auth.currentUser?.email}!</Text>
+            <Text className='text-red-500 font-semibold text-md' onPress={() => { signOut(auth) }}>Exit</Text>
+            <View className="gap-2 w-[calc(100vw-10vw)] lg:w-[calc(100vw-60vw)]">
+                <View className='bg-white flex-row gap-1 p-1 rounded-xl border border-black/10'>
+                    <Button onPress={() => setValue('passed')} variant={value === 'passed' ? 'default' : 'ghost'} className='border border-black/10'>
+                        <Text>Passed Tests</Text>
+                    </Button>
+                    <Button onPress={() => setValue('saved')} variant={value === 'saved' ? 'default' : 'ghost'} className='border border-black/10'>
+                        <Text>Saved Tests</Text>
+                    </Button>
+                </View>
                 <Tabs value={value} onValueChange={setValue}>
-                    <TabsList>
-                        <TabsTrigger value="passed">
-                            <Text className='text-lg'>Passed Tests</Text>
-                        </TabsTrigger>
-                        <TabsTrigger value="saved">
-                            <Text>Saved Tests</Text>
-                        </TabsTrigger>
-                    </TabsList>
-
                     <TabsContent value="passed">
-                        <View className='border'>
-
+                        <View>
+                            <Text>asdasd</Text>
                         </View>
                     </TabsContent>
 
-                    <TabsContent value="survey">
-
+                    <TabsContent value="saved">
+                        <View>
+                            <Text>aszfdasd</Text>
+                        </View>
                     </TabsContent>
                 </Tabs>
             </View>
-
         </View>
     )
 }

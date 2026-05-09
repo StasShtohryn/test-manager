@@ -115,7 +115,7 @@ export default function TestsScreen() {
             accessibilityRole="button"
             accessibilityLabel="Back to categories"
             hitSlop={12}
-            className="-ml-2 rounded-lg p-2 active:opacity-70">
+            className="ml-2 rounded-lg p-2 active:opacity-70">
             <Icon as={ArrowLeft} size={22} />
           </Pressable>
           <Text variant="h3">Tests</Text>
