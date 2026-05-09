@@ -7,7 +7,7 @@ import {
   StatusBar,
   useWindowDimensions,
 } from 'react-native';
-import { router } from 'expo-router';
+import { router, useLocalSearchParams } from 'expo-router';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import type { TestResult, QuestionResult } from '@/types/test-result.types';
 import {
@@ -374,7 +374,34 @@ interface Props {
   onHome?: () => void;
 }
 
-export default function TestResultScreen({ result, onRetry, onHome }: Props) {
+export default function TestResultScreen() {
+    // ⭐ Читаємо result з URL params, а не з props
+  const { result: resultString } = useLocalSearchParams<{ result: string }>();
+
+  // Парсимо JSON
+  const result: TestResult | null = resultString
+    ? JSON.parse(resultString)
+    : null;
+
+  // ⚠️ Перевірка - якщо немає результату, показуємо fallback
+  if (!result) {
+    return (
+      <SafeAreaView edges={['top']} className="flex-1 items-center justify-center bg-background">
+        <Text className="text-base text-muted-foreground">No result available</Text>
+        <Pressable
+          onPress={() => router.replace('/')}
+          className="mt-4 rounded-xl bg-foreground px-6 py-3"
+        >
+          <Text className="text-background">Back to home</Text>
+        </Pressable>
+      </SafeAreaView>
+    );
+  }
+
+  // ⚠️ Конвертуємо дати назад (вони стали рядками після JSON.parse)
+  result.startedAt = new Date(result.startedAt);
+  result.completedAt = new Date(result.completedAt);
+
   const [filter, setFilter] = React.useState<FilterMode>('all');
 
   const message = useMemo(
@@ -399,13 +426,11 @@ export default function TestResultScreen({ result, onRetry, onHome }: Props) {
   };
 
   const handleRetry = () => {
-    if (onRetry) onRetry();
-    else router.back();
+    router.replace(`/test-preview/${result.quiz.id}`);  // ← з результату беремо id
   };
 
   const handleHome = () => {
-    if (onHome) onHome();
-    else router.replace('/');
+    router.replace('/(tabs)')
   };
 
   return (
