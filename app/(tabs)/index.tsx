@@ -14,6 +14,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { useState } from 'react'
 import { auth } from '@/services/FireBaseConfig'
 import { signOut } from 'firebase/auth'
+import { router } from 'expo-router';
 
 export default function indexScreen() {
     const [value, setValue] = useState('passed');
