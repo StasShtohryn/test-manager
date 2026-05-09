@@ -1,4 +1,5 @@
 import { Button } from '@/components/ui/button';
+import { Icon } from '@/components/ui/icon';
 import { Input } from '@/components/ui/input';
 import { Text } from '@/components/ui/text';
 import { TestCard } from '@/components/TestCard';
@@ -6,6 +7,7 @@ import { fetchCategories, fetchQuizzes } from '@/services/api.service';
 import { Category, QuizPreview } from '@/types/api.types';
 import axios from 'axios';
 import { Stack, useLocalSearchParams, useRouter } from 'expo-router';
+import { ArrowLeft } from 'lucide-react-native';
 import React, { useEffect, useMemo, useState } from 'react';
 import { ActivityIndicator, FlatList, Pressable, View } from 'react-native';
 
@@ -15,6 +17,14 @@ const MAX_QUESTIONS_DEFAULT = '';
 export default function TestsScreen() {
   const router = useRouter();
   const { category } = useLocalSearchParams<{ category?: string }>();
+
+  const goBackToCategories = () => {
+    if (router.canGoBack()) {
+      router.back();
+    } else {
+      router.replace('/(tabs)/categories');
+    }
+  };
   const [tests, setTests] = useState<QuizPreview[]>([]);
   const [categories, setCategories] = useState<Category[]>([]);
   const [selectedCategory, setSelectedCategory] = useState<string>('all');
@@ -99,7 +109,17 @@ export default function TestsScreen() {
       <Stack.Screen options={{ headerShown: false }} />
 
       <View className="mb-4 gap-3">
-        <Text variant="h3">Tests</Text>
+        <View className="flex-row items-center gap-2">
+          <Pressable
+            onPress={goBackToCategories}
+            accessibilityRole="button"
+            accessibilityLabel="Back to categories"
+            hitSlop={12}
+            className="-ml-2 rounded-lg p-2 active:opacity-70">
+            <Icon as={ArrowLeft} size={22} />
+          </Pressable>
+          <Text variant="h3">Tests</Text>
+        </View>
         <Text className="text-sm text-muted-foreground">Filter by category and number of questions</Text>
 
         <View className="flex-row gap-2">
