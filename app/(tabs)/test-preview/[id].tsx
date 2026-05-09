@@ -10,14 +10,12 @@ import { Ionicons } from '@expo/vector-icons';
 import LottieView from 'lottie-react-native';
 import loaderAnimation from '../../../assets/images/loader.json';
 
-
 import { Quiz } from '@/types/api.types';
 import { api, fetchQuizById } from '@/services/api.service';
+import { isFavorite, toggleFavorite } from '@/services/firebase-favorites.service';
 
 import { Button } from '@/components/ui/button';
 import { Text } from '@/components/ui/text';
-
-
 
 
 export default function TestingScreen() {
@@ -25,6 +23,11 @@ export default function TestingScreen() {
     const { id } = useLocalSearchParams<{ id?: string }>();
     const [quiz, setQuiz] = useState<Quiz | null>(null);
     const [loading, setLoading] = useState(true);
+
+    // ⭐ Стан улюбленого
+    const [favorite, setFavorite] = useState(false);
+    const [favoriteLoading, setFavoriteLoading] = useState(false);
+
     useEffect(() => {
         if (!id) {
             setLoading(false);
@@ -36,6 +39,35 @@ export default function TestingScreen() {
                 setLoading(false);
             }).catch(() => setLoading(false));
     }, [id]);
+
+    // ⭐ Перевіряємо чи квіз вже в улюблених
+    useEffect(() => {
+        if (!id) return;
+        isFavorite(id)
+            .then(setFavorite)
+            .catch((err) => console.error('Failed to check favorite:', err));
+    }, [id]);
+
+    // ⭐ Перемикання улюбленого
+    const handleToggleFavorite = async () => {
+        if (!quiz || favoriteLoading) return;
+
+        setFavoriteLoading(true);
+
+        // Оптимістичне оновлення UI - користувач одразу бачить результат
+        setFavorite((prev) => !prev);
+
+        try {
+            const newState = await toggleFavorite(quiz);
+            setFavorite(newState);
+        } catch (error) {
+            console.error('Failed to toggle favorite:', error);
+            // Відкочуємо UI у разі помилки
+            setFavorite((prev) => !prev);
+        } finally {
+            setFavoriteLoading(false);
+        }
+    };
 
     const handleStart = () => {
         if (!id) return;
@@ -74,7 +106,19 @@ export default function TestingScreen() {
                     <Ionicons name="arrow-back" size={24} color="black" />
                 </TouchableOpacity>
                 <Text className="text-lg font-bold text-slate-900">Preview of test </Text>
-                <View className="w-10" />
+
+                {/* ⭐ Кнопка улюбленого замість пустого View */}
+                <TouchableOpacity
+                    onPress={handleToggleFavorite}
+                    disabled={favoriteLoading}
+                    className="p-2"
+                >
+                    <Ionicons
+                        name={favorite ? 'heart' : 'heart-outline'}
+                        size={26}
+                        color={favorite ? '#ef4444' : '#1e293b'}
+                    />
+                </TouchableOpacity>
             </View >
 
             <ScrollView className="flex-1 px-6">
