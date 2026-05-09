@@ -11,7 +11,7 @@ import {
 
 
 
-const api = axios.create({
+export const api = axios.create({
   baseURL: 'https://quizapi.io/api/v1',
   headers: {
     'Authorization': `Bearer ${process.env.EXPO_PUBLIC_API_KEY}`,
@@ -27,6 +27,9 @@ const api = axios.create({
 export async function fetchQuizzes(
   params: QuizzesQueryParams = {}
 ): Promise<QuizPreview[]> {
+  console.log(params.limit);
+
+  params.limit = params.limit ?? 50;
   const { data } = await api.get('/quizzes', { params });
   return data.data;
 }
@@ -51,6 +54,7 @@ export async function fetchQuizById(id: string): Promise<Quiz> {
 export async function fetchQuestions(
   params: QuestionsQueryParams = {}
 ): Promise<StandaloneQuestion[]> {
+  params.limit = params.limit ?? 50;
   const { data } = await api.get('/questions', { params });
   return data.data;
 }

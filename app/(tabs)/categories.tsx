@@ -66,8 +66,6 @@ export default function CategoriesScreen() {
     };
   }, [loadCategories]);
 
-
-
   const filteredCategories = useMemo(() => {
     const query = searchQuery.trim().toLowerCase();
     if (!query) return categories;
@@ -98,7 +96,50 @@ export default function CategoriesScreen() {
           <ActivityIndicator />
           <Text className="text-muted-foreground">Loading categories...</Text>
         </View>
-      )
+      ) : errorText ? (
+        <View className="flex-1 items-center justify-center gap-3">
+          <Text className="text-destructive">{errorText}</Text>
+          <Button onPress={loadCategories}>
+            <Text>Try again</Text>
+          </Button>
+        </View>
+      ) : (
+        <FlatList
+          key={`columns-${numColumns}`}
+          data={displayedCategories}
+          keyExtractor={(item) => item.id}
+          numColumns={numColumns}
+          columnWrapperStyle={numColumns > 1 ? { gap: 10 } : undefined}
+          contentContainerStyle={{ gap: 10, paddingBottom: 24 }}
+          ListEmptyComponent={
+            <View className="items-center py-8">
+              <Text className="text-muted-foreground">No categories found.</Text>
+            </View>
+          }
+          ListHeaderComponent={
+            canViewAll ? (
+              <View className="mb-2 items-end">
+                <Pressable onPress={() => setShowAll((prev) => !prev)}>
+                  <Text className="text-primary font-medium">{showAll ? 'Show less' : 'View all'}</Text>
+                </Pressable>
+              </View>
+            ) : null
+          }
+          renderItem={({ item }) => (
+            <Pressable
+              onPress={() =>
+                router.push({
+                  pathname: '/testing/tests',
+                  params: { category: item.name },
+                })
+              }
+              className="mb-2 flex-1 rounded-xl border border-border bg-card p-4">
+              <Text className="text-base font-semibold">{item.name}</Text>
+              <Text className="mt-1 text-sm text-muted-foreground">{item.testsCount} tests</Text>
+            </Pressable>
+          )}
+        />
+      )}
+    </View>
+  );
 }
-
-      const styles = StyleSheet.create({ })
