@@ -145,7 +145,7 @@ export default function TestingScreen() {
                                     {/* Додаткова інфа: складність або тип */}
                                     <View className="flex-row mt-2 gap-2">
                                         <View className={`px-2 py-0.5 rounded-md ${question.difficulty === 'EASY' ? 'bg-green-400' : question.difficulty === 'MEDIUM' ? 'bg-yellow-700' : 'bg-red-500'}`}>
-                                            <Text className={`text-[10px] font-bold uppercase ${question.difficulty ==='MEDIUM' ? 'text-white' : 'text-slate-600'}`}>
+                                            <Text className={`text-[10px] font-bold uppercase ${question.difficulty ==='MEDIUM' ? 'text-white' : 'text-slate-200'}`}>
                                                 {question.difficulty}
                                             </Text>
                                         </View>

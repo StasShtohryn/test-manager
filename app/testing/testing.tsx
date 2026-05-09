@@ -5,6 +5,7 @@ import { Ionicons } from '@expo/vector-icons';
 import { Answer, Quiz } from '@/types/api.types';
 import { fetchQuizById } from '@/services/api.service';
 import QuestionCard from '@/components/QuestionCard';
+import { createTestResult } from '@/services/test-result-service';
 
 export default function testing() {
     const router = useRouter();
@@ -15,6 +16,9 @@ export default function testing() {
 
     const [currentQuestion, setCurrentQuestion] = useState(0);
     const [correctAnswers, setCorrectAnswers] = useState(0);
+    const [userAnswers, setUserAnswers] = useState(
+        new Map<string, string | null>()
+    );
 
     useEffect(() => {
         if (id) {
@@ -30,18 +34,28 @@ export default function testing() {
     }, [id]);
 
     const handleAnswer = (answer: Answer) => {
-        if (answer.isCorrect) {
-            setCorrectAnswers((prev) => prev + 1);
-        }
+    const questionId = quiz!.questions[currentQuestion].id;
 
-        if (
-            quiz &&
-            currentQuestion < quiz.questions.length - 1
-        ) {
-            setCurrentQuestion((prev) => prev + 1);
-        } else {
-            console.log('Результат:', correctAnswers);
-        }
+    setUserAnswers((prev) => {
+        const newMap = new Map(prev);
+        newMap.set(questionId, answer.id);
+        return newMap;
+    });
+
+    if (currentQuestion < quiz!.questions.length - 1) {
+        setCurrentQuestion((prev) => prev + 1);
+    } else {
+        const result = createTestResult(
+        quiz!,
+        userAnswers,
+        new Date()
+        );
+
+        router.push({
+        pathname: '/testing/results',
+        params: { result: JSON.stringify(result) }
+        });
+    }
     };
 
     const nextQuestion = () => {
