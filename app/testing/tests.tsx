@@ -209,7 +209,7 @@ export default function TestsScreen() {
               test={item}
               onPress={(testId) =>
                 router.push({
-                  pathname: '/(tabs)/test-preview/[id]',
+                  pathname: '/test-preview/[id]',
                   params: { id: testId },
                 })
               }

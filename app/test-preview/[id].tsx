@@ -8,7 +8,7 @@ import {
 } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import LottieView from 'lottie-react-native';
-import loaderAnimation from '../../../assets/images/loader.json';
+import loaderAnimation from '../../assets/images/loader.json';
 
 import { Quiz } from '@/types/api.types';
 import { api, fetchQuizById } from '@/services/api.service';
@@ -74,6 +74,9 @@ export default function TestingScreen() {
         router.push({ pathname: '/testing/testing', params: { id } });
     };
 
+    const goBackToTests = () => {
+        router.replace('/testing/tests');
+    };
 
     if (loading) {
         return (
@@ -90,7 +93,7 @@ export default function TestingScreen() {
         return (
             <View className="flex-1 justify-center items-center p-4">
                 <Text>Тest wasn't found :( </Text>
-                <TouchableOpacity onPress={() => router.back()}>
+                <TouchableOpacity onPress={goBackToTests}>
                     <Text className="text-blue-600 mt-4">Back</Text>
                 </TouchableOpacity>
             </View>
@@ -102,7 +105,7 @@ export default function TestingScreen() {
     return (
         <>
             <View className="flex-row items-center justify-between px-4 py-3 border-b border-slate-100" >
-                <TouchableOpacity onPress={() => router.push('/(tabs)/categories')} className="p-2">
+                <TouchableOpacity onPress={goBackToTests} className="p-2">
                     <Ionicons name="arrow-back" size={24} color="black" />
                 </TouchableOpacity>
                 <Text className="text-lg font-bold text-slate-900">Preview of test </Text>
