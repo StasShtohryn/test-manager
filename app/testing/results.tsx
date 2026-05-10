@@ -8,7 +8,7 @@ import {
   useWindowDimensions,
 } from 'react-native';
 import { router, Stack, useLocalSearchParams } from 'expo-router';
-import { SafeAreaView } from 'react-native-safe-area-context';
+import { SafeAreaView, useSafeAreaInsets } from 'react-native-safe-area-context';
 import type { TestResult, QuestionResult } from '@/types/test-result.types';
 import {
   formatDuration,
@@ -375,6 +375,7 @@ interface Props {
 }
 
 export default function TestResultScreen() {
+    const insets = useSafeAreaInsets();
     // ⭐ Читаємо result з URL params, а не з props
   const { result: resultString } = useLocalSearchParams<{ result: string }>();
 
@@ -563,7 +564,7 @@ export default function TestResultScreen() {
           {/* ─── Actions ─── */}
 
         </ScrollView>
-          <View className="gap-3 px-6 py-5">
+          <View className="gap-3 px-6 py-2" style={{paddingBottom: insets.bottom }}>
             <Pressable
               onPress={handleRetry}
               className="items-center rounded-2xl bg-foreground py-4 active:opacity-80"

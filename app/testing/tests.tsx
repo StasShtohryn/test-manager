@@ -10,11 +10,13 @@ import { Stack, useLocalSearchParams, useRouter } from 'expo-router';
 import { ArrowLeft } from 'lucide-react-native';
 import React, { useEffect, useMemo, useState } from 'react';
 import { ActivityIndicator, FlatList, Pressable, View } from 'react-native';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 const MIN_QUESTIONS_DEFAULT = '';
 const MAX_QUESTIONS_DEFAULT = '';
 
 export default function TestsScreen() {
+  const insets = useSafeAreaInsets();
   const router = useRouter();
   const { category } = useLocalSearchParams<{ category?: string }>();
 
@@ -109,7 +111,7 @@ export default function TestsScreen() {
       <Stack.Screen options={{ headerShown: false }} />
 
 
-      <View className="mb-4 gap-3">
+      <View className="mb-4 gap-3" >
         <View className="flex-row items-center gap-2">
           <Pressable
             onPress={goBackToCategories}
@@ -198,7 +200,7 @@ export default function TestsScreen() {
         <FlatList
           data={filteredTests}
           keyExtractor={(item) => item.id}
-          contentContainerStyle={{ gap: 10, paddingBottom: 20 }}
+          contentContainerStyle={{ gap: 10, paddingBottom: insets.bottom }}
           ListEmptyComponent={
             <View className="items-center py-8">
               <Text className="text-muted-foreground">No tests found for selected filters.</Text>
