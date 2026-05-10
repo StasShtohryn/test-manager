@@ -84,7 +84,7 @@ export function SignForm() {
 
     return (
         <View className="gap-2 w-[calc(100vw-10vw)] lg:w-[calc(100vw-60vw)]">
-            <View className='bg-white flex-row gap-1 p-1 rounded-xl'>
+            <View className='bg-white flex-row gap-1 p-2 rounded-xl'>
                 <Button onPress={() => setValue('signin')} variant={value === 'signin' ? 'default' : 'ghost'} className='border border-black/10'>
                     <Text>Sign In</Text>
                 </Button>
@@ -93,15 +93,6 @@ export function SignForm() {
                 </Button>
             </View>
             <Tabs value={value} onValueChange={setValue}>
-                {/* <TabsList className='bg-gray-300'>
-            <TabsTrigger value="signin">
-              <Text>Sign In</Text>
-            </TabsTrigger>
-            <TabsTrigger value="signup">
-              <Text>Sign Up</Text>
-            </TabsTrigger>
-          </TabsList> */}
-
                 <TabsContent value="signin">
                     <Card className="border-border/0 sm:border-border shadow-none sm:shadow-sm sm:shadow-black/5">
                         <CardHeader>

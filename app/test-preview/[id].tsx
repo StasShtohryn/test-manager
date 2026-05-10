@@ -1,4 +1,4 @@
-import { useLocalSearchParams, useRouter } from 'expo-router';
+import { Stack, useLocalSearchParams, useRouter } from 'expo-router';
 import React, { useEffect, useState } from 'react';
 import {
     ActivityIndicator,
@@ -24,7 +24,6 @@ export default function TestingScreen() {
     const [quiz, setQuiz] = useState<Quiz | null>(null);
     const [loading, setLoading] = useState(true);
 
-    // ⭐ Стан улюбленого
     const [favorite, setFavorite] = useState(false);
     const [favoriteLoading, setFavoriteLoading] = useState(false);
 
@@ -40,7 +39,6 @@ export default function TestingScreen() {
             }).catch(() => setLoading(false));
     }, [id]);
 
-    // ⭐ Перевіряємо чи квіз вже в улюблених
     useEffect(() => {
         if (!id) return;
         isFavorite(id)
@@ -48,13 +46,11 @@ export default function TestingScreen() {
             .catch((err) => console.error('Failed to check favorite:', err));
     }, [id]);
 
-    // ⭐ Перемикання улюбленого
     const handleToggleFavorite = async () => {
         if (!quiz || favoriteLoading) return;
 
         setFavoriteLoading(true);
 
-        // Оптимістичне оновлення UI - користувач одразу бачить результат
         setFavorite((prev) => !prev);
 
         try {
@@ -62,7 +58,6 @@ export default function TestingScreen() {
             setFavorite(newState);
         } catch (error) {
             console.error('Failed to toggle favorite:', error);
-            // Відкочуємо UI у разі помилки
             setFavorite((prev) => !prev);
         } finally {
             setFavoriteLoading(false);
@@ -78,16 +73,16 @@ export default function TestingScreen() {
         router.replace('/testing/tests');
     };
 
-    if (loading) {
-        return (
-            <LottieView
-                source={loaderAnimation}
-                style={{ width: 20, height: 20 }}
-                autoPlay
-                loop
-            />
-        );
-    }
+    // if (loading) {
+    //     return (
+    //         <LottieView
+    //             source={loaderAnimation}
+    //             style={{ width: 20, height: 20 }}
+    //             autoPlay
+    //             loop
+    //         />
+    //     );
+    // }
 
     if (!quiz && !loading) {
         return (
@@ -104,13 +99,13 @@ export default function TestingScreen() {
 
     return (
         <>
+            <Stack.Screen options={{ headerShown: false }}/> 
             <View className="flex-row items-center justify-between px-4 py-3 border-b border-slate-100" >
                 <TouchableOpacity onPress={goBackToTests} className="p-2">
                     <Ionicons name="arrow-back" size={24} color="black" />
                 </TouchableOpacity>
                 <Text className="text-lg font-bold text-slate-900">Preview of test </Text>
 
-                {/* ⭐ Кнопка улюбленого замість пустого View */}
                 <TouchableOpacity
                     onPress={handleToggleFavorite}
                     disabled={favoriteLoading}
