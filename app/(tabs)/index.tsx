@@ -53,7 +53,7 @@ export default function indexScreen() {
         <View className='flex-1 items-center pt-20 bg-gray-50'>
             
             <Text className='font-bold text-lg'>Hi, {auth.currentUser?.email}!</Text>
-            <Button variant={'destructive'} className='text-white px-12 my-2' onPress={() => signOut(auth)}>Exit</Button>
+            <Button variant={'destructive'} className='text-white px-12 mt-2 mb-8' onPress={() => signOut(auth)}><Text>Exit</Text></Button>
             
             <View className="w-[90vw] lg:w-[400px] h-[500px] gap-2">
                 
@@ -69,7 +69,7 @@ export default function indexScreen() {
                 <Tabs value={value} onValueChange={setValue} className="flex-1">
                     <TabsContent value="passed" className="flex-1">
                         <ScrollView 
-                            className="flex-1 pt-2 border border-black/10 px-2 rounded-xl" 
+                            className="flex-1 border border-black/10 p-2 rounded-xl" 
                             showsVerticalScrollIndicator={false}
                         >
                             {completedTests.map((test) => (

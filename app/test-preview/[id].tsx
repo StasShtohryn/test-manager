@@ -16,9 +16,11 @@ import { isFavorite, toggleFavorite } from '@/services/firebase-favorites.servic
 
 import { Button } from '@/components/ui/button';
 import { Text } from '@/components/ui/text';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 
 export default function TestingScreen() {
+    const insets = useSafeAreaInsets();
     const router = useRouter();
     const { id } = useLocalSearchParams<{ id?: string }>();
     const [quiz, setQuiz] = useState<Quiz | null>(null);
@@ -201,7 +203,7 @@ export default function TestingScreen() {
             </ScrollView >
 
 
-            <Button variant={'default'} onPress={handleStart} className='mb-2 mx-2'>
+            <Button variant={'default'} onPress={handleStart} className='mb-2 mx-2' style={{marginBottom: insets.bottom }}>
                 <Text className='uppercase'>Start</Text>
             </Button>
         </>

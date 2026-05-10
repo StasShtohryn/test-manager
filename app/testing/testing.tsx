@@ -7,10 +7,12 @@ import { fetchQuizById } from '@/services/api.service';
 import QuestionCard from '@/components/QuestionCard';
 import { createTestResult } from '@/services/test-result-service';
 import { saveTestResult } from '@/services/firebase-results.service';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 export default function testing() {
     const router = useRouter();
-    
+    const insets = useSafeAreaInsets();
+
     const { id } = useLocalSearchParams<{ id: string }>();
     const { data: quizString } = useLocalSearchParams<{ data: string }>();
     
@@ -123,7 +125,7 @@ export default function testing() {
                 )}
             </View>
 
-            <View className='flex-row gap-6 justify-center items-center mb-6'>
+            <View className='flex-row gap-6 justify-center items-center mb-6' style={{paddingBottom: insets.bottom + 20 }}>
                 <TouchableOpacity
                     onPress={prevQuestion}
                     disabled={currentQuestion === 0}
