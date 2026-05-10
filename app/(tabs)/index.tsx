@@ -37,7 +37,7 @@ export default function indexScreen() {
         }
 
         const loadFavoritedTests = async () => {
-            try{
+            try {
                 const tests = await getFavorites()
                 setFavoritedTests(tests)
             } catch (error) {
@@ -51,12 +51,12 @@ export default function indexScreen() {
 
     return (
         <View className='flex-1 items-center pt-20 bg-gray-50'>
-            
-            <Text className='font-bold text-lg'>Hi, {auth.currentUser?.email}!</Text>
+
+            <Text className='font-bold text-lg'>Hi, {auth.currentUser?.email?.split("@")[0]}!</Text>
             <Button variant={'destructive'} className='text-white px-12 mt-2 mb-8' onPress={() => signOut(auth)}><Text>Exit</Text></Button>
-            
+
             <View className="w-[90vw] lg:w-[400px] h-[500px] gap-2">
-                
+
                 <View className='bg-white flex-row gap-1 p-1 rounded-xl border border-black/10'>
                     <Button onPress={() => setValue('passed')} variant={value === 'passed' ? 'default' : 'ghost'} className='flex-1'>
                         <Text>Passed Tests</Text>
@@ -68,47 +68,64 @@ export default function indexScreen() {
 
                 <Tabs value={value} onValueChange={setValue} className="flex-1">
                     <TabsContent value="passed" className="flex-1">
-                        <ScrollView 
-                            className="flex-1 border border-black/10 p-2 rounded-xl" 
-                            showsVerticalScrollIndicator={false}
-                        >
-                            {completedTests.map((test) => (
-                                <View
-                                    key={test.id}
-                                    className="p-4 border border-black/10 mb-2 rounded-xl bg-white"
-                                >
-                                    <View className='flex flex-row justify-between'>
-                                        <Text className="font-bold text-lg">{test.quiz.title}</Text>
-                                        <Text className="text-lg">{test.totalTimeSpent}s</Text>
+                        {completedTests.length === 0 ?
+                            <View className="flex-1 border border-black/10 p-2 rounded-xl justify-center items-center">
+                                <Text>
+                                    There are no passed tests
+                                </Text>
+                            </View> :
+                            <ScrollView
+                                className="flex-1 border border-black/10 p-2 rounded-xl"
+                                showsVerticalScrollIndicator={false}
+                            >
+                                {completedTests.map((test) => (
+                                    <View
+                                        key={test.id}
+                                        className="p-4 border border-black/10 mb-2 rounded-xl bg-white"
+                                    >
+                                        <View className='flex flex-row justify-between'>
+                                            <Text className="font-bold text-lg">{test.quiz.title}</Text>
+                                            <Text className="text-lg">{test.totalTimeSpent}s</Text>
+                                        </View>
+                                        <Text>Score: {test.score}</Text>
+                                        <Text className="text-gray-500 text-sm">
+                                            Date: {new Date(test.completedAt).toLocaleDateString()}
+                                        </Text>
                                     </View>
-                                    <Text>Score: {test.score}</Text>
-                                    <Text className="text-gray-500 text-sm">
-                                        Date: {new Date(test.completedAt).toLocaleDateString()}
-                                    </Text>
-                                </View>
-                            ))}
-                        </ScrollView>
+                                ))}
+                            </ScrollView>
+                        }
+
                     </TabsContent>
 
                     <TabsContent value="saved" className="flex-1">
-                        <ScrollView 
-                            className="flex-1 pt-2 border border-black/10 px-2 rounded-xl" 
-                            showsVerticalScrollIndicator={false}
-                        >
-                            {favoritedTests.map((test) => (
-                                <Pressable
-                                    key={test.id}
-                                    className="p-4 border border-black/10 mb-2 rounded-xl bg-white"
-                                    onPress={() => router.push({ pathname: '/test-preview/[id]', params: { id: test.id }})}
-                                >
-                                    <Text className="font-bold text-lg">{test.title}</Text>
-                                    <Text>Difficulty: {test.difficulty}</Text>
-                                    <Text className="text-gray-500 text-sm">
-                                        Description: {test.description}
+                        {
+                            favoritedTests.length === 0 ?
+                                <View className="flex-1 border border-black/10 p-2 rounded-xl justify-center items-center">
+                                    <Text>
+                                        There are no saved tests
                                     </Text>
-                                </Pressable>
-                            ))}
-                        </ScrollView>
+                                </View> :
+                                <ScrollView
+                                    className="flex-1 pt-2 border border-black/10 px-2 rounded-xl"
+                                    showsVerticalScrollIndicator={false}
+                                >
+                                    {favoritedTests.map((test) => (
+                                        <Pressable
+                                            key={test.id}
+                                            className="p-4 border border-black/10 mb-2 rounded-xl bg-white"
+                                            onPress={() => router.push({ pathname: '/test-preview/[id]', params: { id: test.id } })}
+                                        >
+                                            <Text className="font-bold text-lg">{test.title}</Text>
+                                            <Text>Difficulty: {test.difficulty}</Text>
+                                            <Text className="text-gray-500 text-sm">
+                                                Description: {test.description}
+                                            </Text>
+                                        </Pressable>
+                                    ))}
+                                </ScrollView>
+                        }
+
                     </TabsContent>
                 </Tabs>
             </View>
